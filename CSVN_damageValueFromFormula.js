@@ -13,27 +13,31 @@
 
 /*:
  * @target MZ
- * @plugindesc クリティカルダメージのカスタマイズ
- * @author ノロワレ
- * @url
+ * @plugindesc Critical Damage Value Customization
+ * @author cursed_steven
+ * @url https://note.com/cursed_steven/n/n6a2b8e384df4
  *
  * @help CSVN_damageValueFromFormula.js
  *
- * クリティカル発生時のダメージを「算出値の３倍固定」ではなく
- * 任意の数式の計算結果で返すよう変更します。
+ * Change critical damage value formula from "damage * 3"
+ * to your own formula.
  *
- * 利用規約：
- *  作者に無断で改変、再配布が可能で、利用形態（商用、18禁利用等）
- *  についても制限はありません。
- *  このプラグインはもうあなたのものです。
- *  が、使ったとか参考にしたとか伝えてもらえると喜びます。
+ * @param formula
+ * @text formula
+ * @type text
+ * @default d * 3
+ * @desc d is damage value without critical.
+ *
+ * [License]
+ * this plugin is released under MIT license.
+ * http://opensource.org/licenses/mit-license.php
  */
 
 /*:ja
  * @target MZ
  * @plugindesc クリティカルダメージのカスタマイズ
  * @author ノロワレ
- * @url
+ * @url https://note.com/cursed_steven/n/n6a2b8e384df4
  *
  * @help CSVN_damageValueFromFormula.js
  *
