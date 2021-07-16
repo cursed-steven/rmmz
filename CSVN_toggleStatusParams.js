@@ -204,4 +204,16 @@
         this.resetTextColor();
         this.drawText(value, rect.x + 160, rect.y, 60, "right");
     };
+
+Window_EquipStatus.prototype.drawAllParams = function() {
+    for (let i = 0; i < 6; i++) {
+        if (!indexes.includes(i)) continue;
+
+        const ix = indexes[i];
+        const x = this.itemPadding();
+        const y = this.paramY(ix);
+        const p = paramIds[ix];
+        this.drawItem(x, y, p);
+    }
+};
 })();
