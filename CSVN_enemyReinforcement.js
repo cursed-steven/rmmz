@@ -31,6 +31,11 @@
  * setting value, and put it in the action of the enemy character
  * who calls the reinforcement.
  *
+ * Known bugs:
+ * The processing of the next battler's action may be interrupted before
+ * the execution timing of the processing of summoning, in which case
+ * reinforcement will be delayed.
+ *
  * Terms:
  *  No permission needed for change or re-distribute this plugin.
  *  But I will be glad to being informed you used or reffered this.
@@ -74,6 +79,11 @@
  *
  * 設定値のswitchIdをONにするコモンイベントを作成し、増援を呼ぶ側の
  * 敵キャラの行動にそれを入れてください。
+ *
+ * 既知の不具合：
+ *  なかまよびの処理の実行タイミングよりも先に次のバトラーの行動の
+ *  処理が割り込んでしまうことがあり、その場合はひといき遅れて
+ *  増援がきます。
  *
  * 利用規約：
  *  作者に無断で改変、再配布が可能で、利用形態（商用、18禁利用等）
