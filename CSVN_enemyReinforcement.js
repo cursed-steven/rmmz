@@ -31,6 +31,9 @@
  * setting value, and put it in the action of the enemy character
  * who calls the reinforcement.
  *
+ * This plug-in is intended for use in front view.
+ * Someone please make one for thw side view.
+ *
  * Known bugs:
  * The processing of the next battler's action may be interrupted before
  * the execution timing of the processing of summoning, in which case
@@ -79,6 +82,9 @@
  *
  * 設定値のswitchIdをONにするコモンイベントを作成し、増援を呼ぶ側の
  * 敵キャラの行動にそれを入れてください。
+ *
+ * なお、本プラグインはフロントビューでの利用を想定しています。
+ * サイドビュー用はだれかつくってください。
  *
  * 既知の不具合：
  *  なかまよびの処理の実行タイミングよりも先に次のバトラーの行動の
