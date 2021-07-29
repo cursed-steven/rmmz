@@ -7,6 +7,7 @@
 ----------------------------------------------------------------------------
  Version
  1.0.0 2021/07/28 初版
+ 1.0.1 2021/07/30 画面の横幅が816とハードコーディングされていた問題を修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -287,7 +288,7 @@
             gaps.push(currLeft - prevRight);
         }
         const rightEndEnemy = troop[troop.length - 1];
-        gaps.push(816 - rightEndEnemy.screenX() + this.enemyWidth(rightEndEnemy) / 2);
+        gaps.push(Graphics.boxWidth - rightEndEnemy.screenX() + this.enemyWidth(rightEndEnemy) / 2);
 
         return gaps;
     };
