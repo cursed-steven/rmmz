@@ -17,7 +17,7 @@
  * @base PluginCommonBase
  * @orderAfter PluginCommonBase
  * @author cursed_steven
- * @url
+ * @url https://note.com/cursed_steven/n/nc24f4ef5847b
  *
  * @help CSVN_playSeForItemEx.js
  *
@@ -38,7 +38,7 @@
  * @base PluginCommonBase
  * @orderAfter PluginCommonBase
  * @author ノロワレ
- * @url
+ * @url https://note.com/cursed_steven/n/nc24f4ef5847b
  *
  * @help CSVN_playSeForItemEx.js
  *
