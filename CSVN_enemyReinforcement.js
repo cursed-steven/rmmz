@@ -18,7 +18,7 @@
  * @base PluginCommonBase
  * @orderAfter PluginCommonBase
  * @author cursed_steven
- * @url https://note.com/cursed_steven/n/na4b7aa967e24
+ * @url https://note.com/cursed_steven/n/nb22a144083fd
  *
  * @help CSVN_enemyReinforcement.js
  *
@@ -73,7 +73,7 @@
  * @base PluginCommonBase
  * @orderAfter PluginCommonBase
  * @author ノロワレ
- * @url https://note.com/cursed_steven/n/na4b7aa967e24
+ * @url https://note.com/cursed_steven/n/nb22a144083fd
  *
  * @help CSVN_enemyReinforcement.js
  *
