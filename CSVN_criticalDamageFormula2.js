@@ -7,6 +7,7 @@
 ----------------------------------------------------------------------------
  Version
  1.0.0 2021/08/03 初版
+ 1.0.1 2021/08/03 魔法スキルの会心にも適用されてしまっていた問題の修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -64,7 +65,7 @@
 
     const _Game_Action_executeDamage = Game_Action.prototype.executeDamage;
     Game_Action.prototype.executeDamage = function(target, value) {
-        if (target.result().critical) {
+        if (this.isPhysical() && target.result().critical) {
             value = this.reEvalDamageFormulaCritical(target);
             value = this.applyVariance(value, this.item().damage.variance);
         }
