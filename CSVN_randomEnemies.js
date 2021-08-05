@@ -6,9 +6,6 @@
  This software is released under the MIT License.
  http://opensource.org/licenses/mit-license.php
 ----------------------------------------------------------------------------
- このプラグインは munokura =サン作の MNKR_RandomEnemies.js (v.1.0.4)を
- ベースにかいはつされています。
-----------------------------------------------------------------------------
  Version
  1.0.0 2021/08/05 初版
 ----------------------------------------------------------------------------
@@ -17,6 +14,7 @@
 
 /*:
  * @target MZ
+ * @author munokura(+cursed_steven)
  * @url https://note.com/cursed_steven/n/n097b817e4856
  * @plugindesc Randomly replace the enemy characters in the enemy group.
  * @base PluginCommonBase
@@ -45,6 +43,8 @@
  *
  * No command implemented.
  *
+ * This plugin is based on MNKR_RandomEnemies.js (v.1.0.4) by munokura.
+ *
  * Terms:
  *  No permission needed for change or re-distribute this plugin.
  *  But I will be glad to being informed you used or reffered this.
@@ -62,6 +62,7 @@
 
 /*:
  * @target MZ
+ * @author ムノクラ(+ノロワレ)
  * @url https://note.com/cursed_steven/n/n097b817e4856
  * @plugindesc 敵グループの敵キャラをランダムに入れ替えます。
  * @base PluginCommonBase
@@ -88,6 +89,9 @@
  * 確認可能な方はしてみてください。
  *
  * プラグインコマンドはありません。
+ *
+ * このプラグインは munokura =サン作の MNKR_RandomEnemies.js (v.1.0.4)を
+ * ベースにかいはつされています。
  *
  * 利用規約:
  *   MITライセンスです。
