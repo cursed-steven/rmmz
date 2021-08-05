@@ -17,7 +17,52 @@
 
 /*:
  * @target MZ
- * @url
+ * @url https://note.com/cursed_steven/n/n097b817e4856
+ * @plugindesc Randomly replace the enemy characters in the enemy group.
+ * @base PluginCommonBase
+ * @orderAfter PluginCommonBase
+ * @help Randomly replace the enemy characters in the enemy group.
+ *
+ * Please put the tag as below in the memo field of the enemy character.
+ * <RandomEnemy:enemyID>
+ * <RandomEnemy:enemyID,enemyID,enemyID>
+ * 0 is to be hidden.
+ *
+ * 例
+ * <RandomEnemy:0,0,1,1,2,3>
+ *
+ * Warning！
+ * Do not use the tags below as they will cause an infinite loop.
+ * <RandomEnemy:0>
+ *
+ * At the beginning of the battle, the enemy images are rearranged evenly,
+ * taking into account the amount hidden at 0.
+ * However, it is premised on the front view.
+ * Also, since the enemy image for that purpose is preloaded,
+ * it may be that there are too many images or it is heavy.
+ * I excluded MV from target because I don't have an environment.
+ * If you can confirm it, please try it.
+ *
+ * No command implemented.
+ *
+ * Terms:
+ *  No permission needed for change or re-distribute this plugin.
+ *  But I will be glad to being informed you used or reffered this.
+ *
+ * @param enemyIdFrom
+ * @text enemyIDFrom
+ * @desc Preload range(From)
+ * @type number
+ *
+ * @param enemyIdTo
+ * @text 敵キャラIDTo
+ * @desc Preload range(To)
+ * @type number
+ */
+
+/*:
+ * @target MZ
+ * @url https://note.com/cursed_steven/n/n097b817e4856
  * @plugindesc 敵グループの敵キャラをランダムに入れ替えます。
  * @base PluginCommonBase
  * @orderAfter PluginCommonBase
