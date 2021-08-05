@@ -163,6 +163,7 @@
 
                 if (randomEnemyId != 0) {
                     width = enemyWidth(dataEnemy);
+                    totalWidth += width;
                     shownMembers++;
                 } else {
                     width = 0;
