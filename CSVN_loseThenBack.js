@@ -7,10 +7,10 @@
 ----------------------------------------------------------------------------
  Version
  1.0.0 2021/07/23 初版
+ 1.0.1 2021/08/07 変数とコモンイベントの指定方法を変更
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
-
 
 /*:
  * @target MZ
@@ -32,22 +32,22 @@
  * @param mapIdVarId
  * @text map Id to go back.
  * @desc
- * @type number
+ * @type variable
  *
  * @param mapXVarId
  * @text map X to go back.
  * @desc
- * @type number
+ * @type variable
  *
  * @param mapYVarId
  * @text map Y to go back.
  * @desc
- * @type number
+ * @type variable
  *
  * @param commonEventId
  * @text common event id to do after lose.
  * @desc
- * @type number
+ * @type common_event
  */
 
 /*:ja
@@ -72,23 +72,24 @@
  * @param mapIdVarId
  * @text 戻り先マップIDを入れた変数ID
  * @desc
- * @type number
+ * @type variable
  *
  * @param mapXVarId
  * @text 戻り先マップのX座標を入れた変数ID
  * @desc
- * @type number
+ * @type variable
  *
  * @param mapYVarId
  * @text 戻り先マップのY座標を入れた変数ID
  * @desc
- * @type number
+ * @type variable
  *
  * @param commonEventId
  * @text 戻った直後に実行するコモンイベントID
  * @desc
- * @type number
+ * @type common_event
  */
+
 (() => {
     'use strict';
     const params = PluginManagerEx.createParameter(document.currentScript);
