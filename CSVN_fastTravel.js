@@ -7,6 +7,9 @@
 ----------------------------------------------------------------------------
  Version
  1.0.0 2021/07/24 初版
+ 1.0.1 2021/08/06 船上から使用した場合一時的にキャラを下船させる方向を追加
+                  船上から使用した場合余計なBGMが一瞬鳴る問題に対処
+                  Window_DestListの内容がおかしかったので修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -69,8 +72,8 @@
  *  が、使ったとか参考にしたとか伝えてもらえると喜びます。
  *
  * @command start
- * 	@text 行先選択開始
- *  @desc
+ * @text 行先選択開始
+ * @desc
  */
 
 (() => {
@@ -97,7 +100,8 @@
         destMapY,
         shipMapId,
         shipMapX,
-        shipMapY
+        shipMapY,
+        getOffDir
     ) {
         this._switchId = switchId;
         this.name = name;
@@ -108,13 +112,14 @@
         this._shipMapId = shipMapId;
         this._shipMapX = shipMapX;
         this._shipMapY = shipMapY;
+        this._getOffDir = getOffDir;
     };
 
     CSVN_FastTravelDestination.prototype.enabled = function() {
         return $gameSwitches.value(this._switchId);
     };
 
-    const switchIds = [72, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83];
+    const switchIds = [72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83];
     const names = [
         'ローレシア',
         'リリザ',
@@ -203,7 +208,7 @@
         213,
         169,
         161,
-        95,
+        116,
         30,
         59,
         31,
@@ -227,9 +232,24 @@
         145,
         222,
     ];
+    const getOffDirs = [
+        8,
+        8,
+        2,
+        6,
+        4,
+        4,
+        6,
+        6,
+        6,
+        2,
+        4,
+        2,
+    ];
 
     const swIds = {
         item: 4,
+        executing: 6,
     };
     const varIds = {
         itemId: 42,
@@ -242,6 +262,7 @@
         shipMapX: 25,
         shipMapY: 26,
         eventId: 3,
+        getOffDir: 27,
     };
 
     let tmp = [];
@@ -256,7 +277,8 @@
                 destMapYs[i],
                 shipMapIds[i],
                 shipMapXs[i],
-                shipMapYs[i]
+                shipMapYs[i],
+                getOffDirs[i],
             )
         );
     }
@@ -333,6 +355,7 @@
         $gameVariables.setValue(varIds.shipMapId, this.item()._shipMapId);
         $gameVariables.setValue(varIds.shipMapX, this.item()._shipMapX);
         $gameVariables.setValue(varIds.shipMapY, this.item()._shipMapY);
+        $gameVariables.setValue(varIds.getOffDir, this.item()._getOffDir);
 
         $gameTemp.reserveCommonEvent(varIds.eventId);
         SceneManager.goto(Scene_Map);
@@ -386,6 +409,18 @@
         return this._data && index >= 0 ? this._data[index] : null;
     };
 
+    Window_DestList.prototype.isEnabled = function(item) {
+        return $gameSwitches.value(item._switchId);
+    }
+
+    Window_DestList.prototype.makeItemList = function() {
+        for (const destination of destinations) {
+            if ($gameSwitches.value(destination._switchId)) {
+                this._data.push(destination);
+            }
+        }
+    };
+
     Window_DestList.prototype.selectLast = function() {
         const index = this._data.indexOf($gameParty.lastItem());
         this.forceSelect(index >= 0 ? index : 0);
@@ -409,10 +444,6 @@
         }
     };
 
-    Window_DestList.prototype.makeItemList = function() {
-        this._data = destinations;
-    };
-
     Window_DestList.prototype.updateHelp = function() {
         this.setHelpWindowItem(this.item());
     };
@@ -420,6 +451,16 @@
     Window_DestList.prototype.refresh = function() {
         this.makeItemList();
         Window_Selectable.prototype.refresh.call(this);
+    };
+
+    // [note] 船からの実行時一瞬勝手に実行前の環境のBGMがなってしまうのを抑止する
+    const _Game_System_replayWalkingBgm = Game_System.prototype.replayWalkingBgm;
+    Game_System.prototype.replayWalkingBgm = function() {
+        if ($gameSwitches.value(swIds.executing)) {
+            return;
+        }
+
+        _Game_System_replayWalkingBgm.call(this);
     };
 
 })();
