@@ -8,6 +8,7 @@
  Version
  1.0.0 2021/07/28 初版
  1.0.1 2021/07/30 画面の横幅が816とハードコーディングされていた問題を修正
+ 1.0.2 2021/08/07 変数とスイッチの指定方法を変更
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -59,12 +60,12 @@
  * @param enemyId
  * @text temporary var ID
  * @desc var ID to store enemyID temporarily.
- * @type number
+ * @type variable
  *
  * @param switchId
  * @text switch ID
  * @desc ID of the switch to be turned on at the Summoning common event.
- * @type number
+ * @type switch
  */
 
 /*:ja
@@ -113,12 +114,12 @@
  * @param enemyId
  * @text 敵ID格納先
  * @desc 呼ばれる敵キャラIDを一時的に書き込む変数のID
- * @type number
+ * @type variable
  *
  * @param switchId
  * @text 処理開始判別スイッチID
  * @desc なかまよびコモンイベントでONにするスイッチID
- * @type number
+ * @type switch
  */
 (() => {
     'use strict';
@@ -269,7 +270,7 @@
         }
 
         return sortedTroop;
-    }
+    };
 
     BattleManager.getGaps = function(troop) {
         let prevRight = 0;
