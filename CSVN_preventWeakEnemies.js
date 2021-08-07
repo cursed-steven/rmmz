@@ -17,7 +17,7 @@
  * @base PluginCommonBase
  * @orderAfter PluginCommonBase
  * @author cursed_steven
- * @url
+ * @url https://note.com/cursed_steven/n/nad70c5354179
  *
  * @help CSVN_preventWeakEnemies.js
  *
@@ -46,11 +46,11 @@
 
 /*:ja
  * @target MZ
- * @plugindesc 弱い敵の出現を防ぐ
+ * @plugindesc 弱い敵の出現を防ぐ。
  * @base PluginCommonBase
  * @orderAfter PluginCommonBase
  * @author ノロワレ
- * @url
+ * @url https://note.com/cursed_steven/n/nad70c5354179
  *
  * @help CSVN_preventWeakEnemies.js
  *
