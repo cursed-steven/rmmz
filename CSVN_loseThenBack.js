@@ -8,6 +8,7 @@
  Version
  1.0.0 2021/07/23 初版
  1.0.1 2021/08/07 変数とコモンイベントの指定方法を変更
+ 1.0.2 2021/08/11 負けた直後戻る前にONにするスイッチを導入
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -84,6 +85,11 @@
  * @desc
  * @type variable
  *
+ * @param loseSwitchId
+ * @text 負けた直後戻る前にONにするスイッチ
+ * @desc
+ * @type switch
+ *
  * @param commonEventId
  * @text 戻った直後に実行するコモンイベントID
  * @desc
@@ -100,6 +106,7 @@
             SceneManager.exit();
         } else if (!this._escaped && $gameParty.isAllDead()) {
             AudioManager.stopBgm();
+            $gameSwitches.setValue(params.loseSwitchId, true);
             $gameParty.members()[0].revive();
             $gamePlayer.reserveTransfer(
                 $gameVariables.value(params.mapIdVarId),
