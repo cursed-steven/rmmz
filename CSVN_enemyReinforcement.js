@@ -10,6 +10,7 @@
  1.0.1 2021/07/30 画面の横幅が816とハードコーディングされていた問題を修正
  1.0.2 2021/08/07 変数とスイッチの指定方法を変更
  1.0.3 2021/08/10 BattleManager.getGaps の bugfix
+ 1.0.4 2021/08/13 BattleManager.determineXYOfAddedEnemy の bugfix
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -126,7 +127,7 @@
     'use strict';
     const params = PluginManagerEx.createParameter(document.currentScript);
 
-    const minGap = 16;
+    const minGap = 24;
     const successed = params.successed;
     const failed = params.failed;
     let isFailed = false;
@@ -216,10 +217,8 @@
         let prevRight = 0;
         let enemy = null;
         for (let i = 0; i < gaps.length; i++) {
-            if (gaps[i] > addingWidth) {
-                if (i == 0) {
-                    prevRight = addingWidth / 2 + minGap;
-                } else {
+            if (gaps[i] > addingWidth + minGap * 2) {
+                if (i > 0) {
                     enemy = $dataEnemies[troop[i - 1].enemyId()];
                     prevRight = troop[i - 1].screenX() + this.enemyWidth(enemy) / 2;
                 }
