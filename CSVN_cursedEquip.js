@@ -1,5 +1,5 @@
 /*=============================================================================
- CSVB_cursedEquip.js
+ CSVN_cursedEquip.js
 ----------------------------------------------------------------------------
  (C)2021 cursed_steven
  This software is released under the MIT License.
@@ -7,6 +7,7 @@
 ----------------------------------------------------------------------------
  Version
  1.0.0 2021/8/15 初版
+ 1.0.1 2021/8/15 「すべてはずす」ではずれてしまう問題の修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -19,7 +20,7 @@
  * @author cursed_steven
  * @url https://note.com/cursed_steven/n/n5a1f63a5397a
  *
- * @help CSVB_cursedEquip.js
+ * @help CSVN_cursedEquip.js
  *
  * When the set state is reached, the equipment cannot be changed.
  *
@@ -41,7 +42,7 @@
  * @author ノロワレ
  * @url https://note.com/cursed_steven/n/n5a1f63a5397a
  *
- * @help CSVB_cursedEquip.js
+ * @help CSVN_cursedEquip.js
  *
  * 設定したステートになると、装備の変更ができなくなるようにします。
  *
@@ -71,6 +72,18 @@
         }
     };
 
+    const _Scene_Equip_commandEquip = Scene_Equip.prototype.commandEquip;
+    Scene_Equip.prototype.commandEquip = function() {
+        if (this.actor().isStateAffected(params.curseStateId)) {
+            SoundManager.playBuzzer();
+            this._statusWindow.refresh();
+            this._slotWindow.refresh();
+            this._commandWindow.activate();
+        } else {
+            _Scene_Equip_commandEquip.call(this);
+        }
+    };
+
     const _Scene_Equip_commandOptimize = Scene_Equip.prototype.commandOptimize;
     Scene_Equip.prototype.commandOptimize = function() {
         if (this.actor().isStateAffected(params.curseStateId)) {
@@ -80,6 +93,18 @@
             this._commandWindow.activate();
         } else {
             _Scene_Equip_commandOptimize.call(this);
+        }
+    };
+
+    const _Scene_Equip_commandClear = Scene_Equip.prototype.commandClear;
+    Scene_Equip.prototype.commandClear = function() {
+        if (this.actor().isStateAffected(params.curseStateId)) {
+            SoundManager.playBuzzer();
+            this._statusWindow.refresh();
+            this._slotWindow.refresh();
+            this._commandWindow.activate();
+        } else {
+            _Scene_Equip_commandClear.call(this);
         }
     };
 })();
