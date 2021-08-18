@@ -7,6 +7,7 @@
 ----------------------------------------------------------------------------
  Version
  1.0.0 2021/08/07 初版
+ 1.1.0 2021/08/18 メタタグがない場合の挙動を設定可能に
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -28,7 +29,13 @@
  * meta tag in the memo field.
  * ex. <Lv:25>
  *
- * If the meta tag is not written, it will be treated as Lv99.
+ * If you do not write a meta tag, it depends on the plugin settings.
+ * In addition, since the encounter is judged by the average level of
+ * the entire enemy group, even if the enemy character is sufficiently
+ * lower than the party level, if there is an enemy character with
+ * a higher level in the same group, it will appear together.
+ *
+ * v1.1.0 Thanks to: Mr. Sasuke Kannaduki
  *
  * Terms:
  *  No permission needed for change or re-distribute this plugin.
@@ -42,6 +49,13 @@
  * @param lvDiff
  * @text Setting level difference
  * @desc Encounters with enemy groups below the average party level minus this value will be skipped while the specified switch is on.
+ *
+ * @param woMetatag
+ * @text Treatment of enemy characters without meta tags.
+ * @desc Select whether it is equivalent to Lv:1 or equivalent to Lv:99.
+ * @type select
+ * @option 1
+ * @option 99
  */
 
 /*:ja
@@ -61,7 +75,12 @@
  * 設定できます。
  * ex. <Lv:25>
  *
- * なお、メタタグを書いていない場合はLv99として扱われます。
+ * メタタグを書いていない場合の挙動はプラグイン設定に依存します。
+ * なお、敵グループ全体のレベルの平均でエンカウント要否を判断しますので、
+ * パーティーのレベルより十分にレベルが低い敵キャラでも、同グループに
+ * レベルの高い敵キャラがいる場合はいっしょに出てくることがあります。
+ *
+ * v1.1.0 Thanks to: 神無月サスケ=サン
  *
  * 利用規約：
  *  作者に無断で改変、再配布が可能で、利用形態（商用、18禁利用等）
@@ -77,6 +96,13 @@
  * @param lvDiff
  * @text 設定レベル差
  * @desc 敵グループのLv平均がパーティのLv平均をこの設定値以上下回るとエンカウントがスキップされます。
+ *
+ * @param woMetatag
+ * @text メタタグがない敵キャラの扱い
+ * @desc Lv:1 相当か Lv:99 相当かを選択します。
+ * @type select
+ * @option 1
+ * @option 99
  */
 
 (() => {
@@ -115,7 +141,7 @@
             for (const enemy of enemies) {
                 if ($dataEnemies[enemy._enemyId]) {
                     dataEnemy = $dataEnemies[enemy._enemyId];
-                    lvs += Number(dataEnemy.meta.Lv ? dataEnemy.meta.Lv : 99);
+                    lvs += Number(dataEnemy.meta.Lv ? dataEnemy.meta.Lv : params.woMetatag);
                 }
             }
             troopLvAve = Math.floor(lvs / enemies.length);
