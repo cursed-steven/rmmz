@@ -8,6 +8,7 @@
  Version
  1.0.0 2021/08/07 初版
  1.1.0 2021/08/18 メタタグがない場合の挙動を設定可能に
+ 1.1.1 2021/08/18 メタタグがない場合の設定が空欄の場合落ちる問題の修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -108,6 +109,7 @@
 (() => {
     'use strict';
     const params = PluginManagerEx.createParameter(document.currentScript);
+    const woMetatag = params.woMetatag ? params.woMetatag : 99;
 
     const _Game_Player_executeEnounter = Game_Player.prototype.executeEncounter;
     Game_Player.prototype.executeEncounter = function() {
@@ -141,10 +143,12 @@
             for (const enemy of enemies) {
                 if ($dataEnemies[enemy._enemyId]) {
                     dataEnemy = $dataEnemies[enemy._enemyId];
-                    lvs += Number(dataEnemy.meta.Lv ? dataEnemy.meta.Lv : params.woMetatag);
+                    console.log(Number(dataEnemy.meta.Lv ? dataEnemy.meta.Lv : woMetatag));
+                    lvs += Number(dataEnemy.meta.Lv ? dataEnemy.meta.Lv : woMetatag);
                 }
             }
             troopLvAve = Math.floor(lvs / enemies.length);
+            console.log(`ave: ${troopLvAve}`);
 
             const members = $gameParty.aliveMembers();
             lvs = 0;
