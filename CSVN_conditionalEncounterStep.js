@@ -8,6 +8,7 @@
  Version
  1.0.0 2021/09/17 初版
  1.0.1 2021/09/17 マップIDの条件がきいていないバグを修正
+ 1.0.2 2021/09/17 いちど条件合致判定されるとそのままになるバグを修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -168,8 +169,8 @@
     const conditions = params.conditions;
 
     const _Game_Map_encounterStep = Game_Map.prototype.encounterStep;
-    let matchedCondition = null;
     Game_Map.prototype.encounterStep = function() {
+        let matchedCondition = null;
         for (const condition of conditions) {
             // 合否判断
             const judge = judgeCondition(condition);
@@ -187,11 +188,11 @@
         // 設定した条件のなかでひとつでも合致していれば、
         // その条件にそって変更した敵出現歩数を返す
         if (matchedCondition !== null) {
-            console.log(`----> changed: ${matchedCondition.encounterStep}`);
+            //console.log(`----> changed: ${matchedCondition.encounterStep}`);
             return matchedCondition.encounterStep;
         } else {
             // 設定条件を満たしていなかったらマップ設定の値をそのまま返す
-            console.log(`----> not changed: ${_Game_Map_encounterStep.call(this)}`);
+            //console.log(`----> not changed: ${_Game_Map_encounterStep.call(this)}`);
             return _Game_Map_encounterStep.call(this);
         }
     };
