@@ -7,6 +7,7 @@
 ----------------------------------------------------------------------------
  Version
  1.0.0 2021/09/17 初版
+ 1.0.1 2021/09/17 マップIDの条件がきいていないバグを修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -186,11 +187,11 @@
         // 設定した条件のなかでひとつでも合致していれば、
         // その条件にそって変更した敵出現歩数を返す
         if (matchedCondition !== null) {
-            //console.log(`----> changed: ${matchedCondition.encounterStep}`);
+            console.log(`----> changed: ${matchedCondition.encounterStep}`);
             return matchedCondition.encounterStep;
         } else {
             // 設定条件を満たしていなかったらマップ設定の値をそのまま返す
-            //console.log(`----> not changed: ${_Game_Map_encounterStep.call(this)}`);
+            console.log(`----> not changed: ${_Game_Map_encounterStep.call(this)}`);
             return _Game_Map_encounterStep.call(this);
         }
     };
@@ -203,32 +204,36 @@
 
         // マップIDが入っている
         if (condition.mapId) {
-            // 条件にスイッチが設定されている
-            if (condition.switchId) {
-                // 指定したスイッチがON
-                if ($gameSwitches.value(condition.switchId)) {
+            if ($gameMap.mapId() == condition.mapId) {
+                // 条件にスイッチが設定されている
+                if (condition.switchId) {
+                    // 指定したスイッチがON
+                    if ($gameSwitches.value(condition.switchId)) {
+                        // 条件に変数が設定されている
+                        if (condition.varId && condition.varValue) {
+                            // 変数が条件を満たしているか判断
+                            judge = judgeByVar(condition);
+                        } else {
+                            // 条件に変数が設定されていない
+                            judge = true;
+                        }
+                    } else {
+                        // 指定したスイッチがOFF
+                        judge = false;
+                    }
+                } else {
+                    // 条件にスイッチが設定されていない
                     // 条件に変数が設定されている
                     if (condition.varId && condition.varValue) {
                         // 変数が条件を満たしているか判断
                         judge = judgeByVar(condition);
                     } else {
                         // 条件に変数が設定されていない
-                        judge = true;
+                        judge = false;
                     }
-                } else {
-                    // 指定したスイッチがOFF
-                    judge = false;
                 }
             } else {
-                // 条件にスイッチが設定されていない
-                // 条件に変数が設定されている
-                if (condition.varId && condition.varValue) {
-                    // 変数が条件を満たしているか判断
-                    judge = judgeByVar(condition);
-                } else {
-                    // 条件に変数が設定されていない
-                    judge = false;
-                }
+                judge = false;
             }
         }
 
