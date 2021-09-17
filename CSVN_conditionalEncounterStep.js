@@ -9,6 +9,7 @@
  1.0.0 2021/09/17 初版
  1.0.1 2021/09/17 マップIDの条件がきいていないバグを修正
  1.0.2 2021/09/17 いちど条件合致判定されるとそのままになるバグを修正
+ 1.0.3 2021/09/18 変数の条件判定のバグを修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -251,7 +252,7 @@
         let judge = false;
         const varId = condition.varId;
         const varValue = condition.varValue;
-        switch (condition.varInquality) {
+        switch (Number(condition.varInequality)) {
             case 0:
                 if ($gameVariables.value(varId) == varValue) {
                     judge = true;
