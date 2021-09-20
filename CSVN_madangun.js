@@ -17,7 +17,7 @@
  * @base PluginCommonBase
  * @orderAfter PluginCommonBase
  * @author cursed_steven
- * @url
+ * @url https://note.com/cursed_steven/n/n5206c66a0db7
  *
  * @help CSVN_madangun.js
  *
@@ -72,7 +72,7 @@
  * @base PluginCommonBase
  * @orderAfter PluginCommonBase
  * @author ノロワレ
- * @url
+ * @url https://note.com/cursed_steven/n/n5206c66a0db7
  *
  * @help CSVN_madangun.js
  *
