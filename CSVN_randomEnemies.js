@@ -43,6 +43,16 @@
  * I excluded MV from target because I don't have an environment.
  * If you can confirm it, please try it.
  *
+ * v1.1.0 additional note
+ * As expected, the premise that the battler image name and the enemy
+ * character name are the same was not good, so it was repaired.
+ * However, it is a provisional support to put a tag as the battler
+ * image name used in the memo field of the enemy character.
+ *
+ * 例
+ * <battlerImage:Akumashinkan>
+ * →img/enemies/Akumashinkan.png is to be loaded.
+ *
  * No command implemented.
  *
  * This plugin is based on MNKR_RandomEnemies.js (v.1.0.4) by munokura.
@@ -89,6 +99,14 @@
  * あまり多いとか重いとかだとアレかもしれません。
  * また、MVはウチに環境がないので target からは除外しました。
  * 確認可能な方はしてみてください。
+ *
+ * v1.1.0 追記
+ * 流石にバトラー画像名と敵キャラ名が同じになる前提はよろしくなかったので改修。
+ * ただし、敵キャラのメモ欄に使用するバトラー画像名としてタグを入れる暫定対応です。
+ *
+ * 例
+ * <battlerImage:Akumashinkan>
+ * →img/enemies/Akumashinkan.png が読み込まれます。
  *
  * プラグインコマンドはありません。
  *
