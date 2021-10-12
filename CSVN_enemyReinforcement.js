@@ -11,6 +11,7 @@
  1.0.2 2021/08/07 変数とスイッチの指定方法を変更
  1.0.3 2021/08/10 BattleManager.getGaps の bugfix
  1.0.4 2021/08/13 BattleManager.determineXYOfAddedEnemy の bugfix
+ 1.1.0 2021/10/12 バトラー画像名と敵キャラ名が同じ前提であったのを修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -165,9 +166,9 @@
         return battler;
     };
 
-    const _BattleManater_startAction = BattleManager.startAction;
+    const _BattleManager_startAction = BattleManager.startAction;
     BattleManager.startAction = function() {
-        _BattleManater_startAction.apply(this);
+        _BattleManager_startAction.apply(this);
         if (this._subject) {
             $gameVariables.setValue(eidVarId, this._subject._enemyId);
         }
@@ -300,11 +301,11 @@
             return 0;
         }
 
-        return ImageManager.loadEnemy(enemy.battlerName).width;
+        return ImageManager.loadEnemy(enemy.meta.battlerImage).width;
     };
 
     BattleManager.onCallHelpSuccessed = function(enemy) {
-        this._logWindow.push('addText', successed.format(enemy.battlerName()));
+        this._logWindow.push('addText', successed.format(enemy.name()));
         this._logWindow.push('wait');
         this._logWindow.push('clear');
         $gameSwitches.setValue(switchId, false);

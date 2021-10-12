@@ -9,6 +9,7 @@
  Version
  1.0.0 2021/08/05 初版
  1.0.1 2021/08/05 戦闘テスト以外で動作しない不具合を修正
+ 1.1.0 2021/10/12 バトラー画像名と敵キャラ名が同じ前提であったのを修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -133,8 +134,13 @@
     ImageManager.preloadEnemyImages = function(from, to) {
         for (let enemyId = from; enemyId <= to; enemyId++) {
             const dataEnemy = $dataEnemies[enemyId];
-            if (dataEnemy) {
-                this.loadEnemy(dataEnemy.battlerName);
+            if (dataEnemy && dataEnemy.meta.battlerImage) {
+                if (typeof dataEnemy.meta.battlerImage != 'string') {
+                    alert('CSVN_randomEnemies: !');
+                    continue;
+                }
+                console.log(`battlerImage: ${dataEnemy.meta.battleImage}`);
+                this.loadEnemy(dataEnemy.meta.battlerImage);
             }
         }
     };
@@ -209,7 +215,8 @@
             return 0;
         }
 
-        return ImageManager.loadEnemy(dataEnemy.battlerName).width;
+        console.log(`battlerImage: ${dataEnemy.meta.battleImage}`);
+        return ImageManager.loadEnemy(dataEnemy.meta.battlerImage).width;
     }
 
     function selectEnemyId(arrayData) {
@@ -219,5 +226,4 @@
         var pool = JsonEx.parse(`[${arrayData.meta.RandomEnemy}]`);
         return Number(pool[Math.randomInt(pool.length)]);
     };
-
 })();
