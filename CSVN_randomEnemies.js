@@ -10,67 +10,14 @@
  1.0.0 2021/08/05 初版
  1.0.1 2021/08/05 戦闘テスト以外で動作しない不具合を修正
  1.1.0 2021/10/12 バトラー画像名と敵キャラ名が同じ前提であったのを修正
+ 2.0.0 2021/11/01 リファクタ、サイドビューに対応、battlerImageタグを不要に。
+ 2.0.1 2021/11/06 サイドビューの場合完全ランダムではなくほどほどに重ならないように
+                  座標を調整する仕様を追加。
+ 2.0.2 2021/11/12 固有名をつける処理のバグを修正、NUUN_BattleBGM対応追加。
+ 2.0.3 2022/02/11 横幅が大きい敵画像をSVで使うと位置が右に寄りすぎる問題の修正
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
-
-/*:
- * @target MZ
- * @author munokura(+cursed_steven)
- * @url https://note.com/cursed_steven/n/n097b817e4856
- * @plugindesc Randomly replace the enemy characters in the enemy group.
- * @base PluginCommonBase
- * @orderAfter PluginCommonBase
- * @help Randomly replace the enemy characters in the enemy group.
- *
- * Please put the tag as below in the memo field of the enemy character.
- * <RandomEnemy:enemyID>
- * <RandomEnemy:enemyID,enemyID,enemyID>
- * 0 is to be hidden.
- *
- * 例
- * <RandomEnemy:0,0,1,1,2,3>
- *
- * Warning！
- * Do not use the tags below as they will cause an infinite loop.
- * <RandomEnemy:0>
- *
- * At the beginning of the battle, the enemy images are rearranged evenly,
- * taking into account the amount hidden at 0.
- * However, it is premised on the front view.
- * Also, since the enemy image for that purpose is preloaded,
- * it may be that there are too many images or it is heavy.
- * I excluded MV from target because I don't have an environment.
- * If you can confirm it, please try it.
- *
- * v1.1.0 additional note
- * As expected, the premise that the battler image name and the enemy
- * character name are the same was not good, so it was repaired.
- * However, it is a provisional support to put a tag as the battler
- * image name used in the memo field of the enemy character.
- *
- * 例
- * <battlerImage:Akumashinkan>
- * →img/enemies/Akumashinkan.png is to be loaded.
- *
- * No command implemented.
- *
- * This plugin is based on MNKR_RandomEnemies.js (v.1.0.4) by munokura.
- *
- * Terms:
- *  No permission needed for change or re-distribute this plugin.
- *  But I will be glad to being informed you used or reffered this.
- *
- * @param enemyIdFrom
- * @text enemyIDFrom
- * @desc Preload range(From)
- * @type number
- *
- * @param enemyIdTo
- * @text 敵キャラIDTo
- * @desc Preload range(To)
- * @type number
- */
 
 /*:
  * @target MZ
@@ -89,35 +36,35 @@
  * 例
  * <RandomEnemy:0,0,1,1,2,3>
  *
- * 注意！
- * 下記のタグは無限ループが発生するため、使用しないでください。
- * <RandomEnemy:0>
- *
- * 戦闘開始時エネミー画像は、0で非表示になった分を考慮して均等に並べ直されます。
- * ただし、フロントビュー前提です。
+ * フロントビューの場合、戦闘開始時エネミー画像は、0で非表示になった分を
+ * 考慮して均等に並べ直されます。
  * また、そのためのエネミー画像をプリロードするので、画像が
  * あまり多いとか重いとかだとアレかもしれません。
  * また、MVはウチに環境がないので target からは除外しました。
  * 確認可能な方はしてみてください。
  *
- * v1.1.0 追記
- * 流石にバトラー画像名と敵キャラ名が同じになる前提はよろしくなかったので改修。
- * ただし、敵キャラのメモ欄に使用するバトラー画像名としてタグを入れる暫定対応です。
- *
- * 例
- * <battlerImage:Akumashinkan>
- * →img/enemies/Akumashinkan.png が読み込まれます。
- *
  * プラグインコマンドはありません。
  *
  * このプラグインは munokura =サン作の MNKR_RandomEnemies.js (v.1.0.4)を
- * ベースにかいはつされています。
+ * ベースにしつつリライトしてかいはつされています。
  *
  * 利用規約:
  *   MITライセンスです。
  *   https://licenses.opensource.jp/MIT/MIT.html
  *   作者に無断で改変、再配布が可能で、
  *   利用形態（商用、18禁利用等）についても制限はありません。
+ *
+ * @param boxWidth
+ * @text 画面横幅
+ * @desc システム２の「画面の幅」
+ * @default 816
+ * @type number
+ *
+ * @param boxHeight
+ * @text 画面高さ
+ * @desc システム２の「画面の高さ」
+ * @default 624
+ * @type number
  *
  * @param enemyIdFrom
  * @text 敵キャラIDFrom
@@ -134,114 +81,306 @@
 
     'use strict';
     const params = PluginManagerEx.createParameter(document.currentScript);
+    const boxWidth = params.boxWidth ? params.boxWidth : 816;
+    const boxHeight = params.boxHeight ? params.boxHeight : 624;
+    const enemyIdFrom = params.enemyIdFrom ? params.enemyIdFrom : 1;
+    const enemyIdTo = params.enemyIdTo ? params.enemyIdTo : 2000;
 
     const _Scene_Boot_onDatabaseLoaded = Scene_Boot.prototype.onDatabaseLoaded;
     Scene_Boot.prototype.onDatabaseLoaded = function() {
         _Scene_Boot_onDatabaseLoaded.call(this);
 
-        ImageManager.preloadEnemyImages(params.enemyIdFrom, params.enemyIdTo);
+        ImageManager.preloadEnemyImages(enemyIdFrom, enemyIdTo);
     };
 
     const _Scene_Map_create = Scene_Map.prototype.create;
     Scene_Map.prototype.create = function() {
         _Scene_Map_create.call(this);
 
-        ImageManager.preloadEnemyImages(params.enemyIdFrom, params.enemyIdTo);
+        ImageManager.preloadEnemyImages(enemyIdFrom, enemyIdTo);
     };
 
     ImageManager.preloadEnemyImages = function(from, to) {
         for (let enemyId = from; enemyId <= to; enemyId++) {
             const dataEnemy = $dataEnemies[enemyId];
-            if (dataEnemy && dataEnemy.meta.battlerImage) {
-                if (typeof dataEnemy.meta.battlerImage != 'string') {
-                    alert('CSVN_randomEnemies: !');
-                    continue;
-                }
-                console.log(`battlerImage: ${dataEnemy.meta.battleImage}`);
-                this.loadEnemy(dataEnemy.meta.battlerImage);
+            if (dataEnemy && dataEnemy.battlerName) {
+                this.loadEnemy(dataEnemy.battlerName);
             }
         }
     };
 
-    const _Game_Troop_setup = Game_Troop.prototype.setup;
-    Game_Troop.prototype.setup = function (troopId) {
-        _Game_Troop_setup.call(this, troopId);
-        var condition = true;
-        while (condition) {
-            this.clear();
-            this._troopId = troopId;
-            this._enemies = [];
+    Game_Troop.prototype.setup = function(troopId) {
 
-            let randomEnemyId = 0;
-            let enemyIds = [];
-            let gameEnemy, dataEnemy;
-            let widths = [];
-            let width = 0;
-            let totalWidth = 0;
-            const members = this.troop().members;
-            let shownMembers = 0;
-            for (let i = 0; i < members.length; i++) {
-                dataEnemy = $dataEnemies[members[i].enemyId];
-                randomEnemyId = selectEnemyId(dataEnemy);
-                dataEnemy = $dataEnemies[randomEnemyId];
+        this.clear();
+        this._troopId = troopId;
 
-                if (randomEnemyId != 0) {
-                    width = enemyWidth(dataEnemy);
-                    totalWidth += width;
-                    shownMembers++;
-                } else {
-                    width = 0;
-                }
-                enemyIds.push(randomEnemyId);
-                widths.push(width);
+        let members = this.lotteryEnemyIds();
+
+        while (members.length == 0) {
+
+            // 全部いなくなってしまった場合は再抽選
+            members = this.lotteryEnemyIds();
+
+        }
+
+        // フロントビューかサイドビューかを判別して敵配置
+        if ($gameSystem.isSideView()) {
+
+            // サイドビューの場合
+            this.rearrangeEnemiesSV(members);
+
+        } else {
+
+            // フロントビューの場合
+            this.rearrangeEnemiesFV(members);
+
+        }
+
+        // 固有名(ＡＢＣ...)をつける
+        this.makeUniqueNames();
+
+        // NUUN_BattleBGMが入っている場合はさらにBGM設定
+        if (typeof Game_Troop.prototype.battleBGMsetup == 'function') {
+
+            const bgm = this.battleBGMsetup();
+            $gameSystem.setBattleBgm(bgm);
+
+        }
+
+    };
+
+    Game_Troop.prototype.lotteryEnemyIds = function() {
+
+        // RandomEnemiesタグを見て敵IDを抽選し、
+        // dataEnemyオブジェクトの配列にして返す
+        const troopObjs = this.troop().members;
+        //console.log(troopObjs);
+        // -> {enemyId, x, y, hidden}の配列
+
+        let randomEnemyIds;
+        let enemyId;
+        let dEnemy;
+        let dEnemies = [];
+        for (let i = 0; i < troopObjs.length; i++) {
+
+            dEnemy = $dataEnemies[troopObjs[i].enemyId];
+            if (dEnemy.meta.RandomEnemy) {
+
+                // タグ記載がある
+                randomEnemyIds = dEnemy.meta.RandomEnemy.split(',');
+                enemyId = randomEnemyIds[Math.randomInt(randomEnemyIds.length)];
+
+            } else {
+
+                // タグ記載がない
+                enemyId = troopObjs[i].enemyId;
+
+            }
+            //console.log(enemyId);
+
+            if (enemyId != 0) {
+
+                dEnemy = $dataEnemies[enemyId];
+                dEnemy.hidden = troopObjs[i].hidden;
+                dEnemies.push(dEnemy);
+
             }
 
-            const minGap = 24;
-            // [note] この時点では Graphics.boxWidth はまだ0になる
-            const sideGap = (816 - totalWidth - minGap * (shownMembers - 1)) / 2;
+        }
 
-            let x = sideGap;
-            for (let i = 0; i < members.length; i++) {
-                if (enemyIds[i] == 0 || members[i].hidden) {
-                    widths[i] = 0;
-                }
+        return dEnemies;
 
-                x += widths[i] / 2;
+    };
 
-                gameEnemy = new Game_Enemy(enemyIds[i] || members[i].enemyId, x, members[i].y);
-                if (enemyIds[i] == 0 || members[i].hidden) {
-                    gameEnemy.hide();
-                } else {
-                    condition = false;
-                }
+    Game_Troop.prototype.rearrangeEnemiesSV = function(dEnemies) {
 
-                this._enemies.push(gameEnemy);
+        // dataEnemyオブジェクトの配列を受け取って、
+        // それぞれの内容からランダムに配置を決めてXY座標を決めて
+        // this._enemies に追加する。
 
-                x += widths[i] / 2;
+        // 一旦内容をクリア
+        this._enemies = [];
 
-                if (widths[i] > 0) {
-                    x += minGap;
-                }
+        // それぞれについて Game_Enemy を定義してメンバーに追加
+        let gEnemy;
+        let xy = {};
+        for (let i = 0; i < dEnemies.length; i++) {
+
+            // 画面内の適切な範囲でかつ、
+            // すでに座標が決まっている敵画像と重ならないようなXY座標を求める
+            xy = this.getCheckedRandomXY(dEnemies[i]);
+
+            gEnemy = new Game_Enemy(dEnemies[i].id, xy.x, xy.y);
+            if (dEnemies[i].hidden) {
+
+                gEnemy.hide();
+
             }
 
-            this.makeUniqueNames();
+            this._enemies.push(gEnemy);
+
+        }
+
+    };
+
+    Game_Troop.prototype.getCheckedRandomXY = function(dEnemy) {
+
+        let xy = {
+            x: getRandomX(dEnemy),
+            y: getRandomY(dEnemy),
         };
-    };
+        //console.log(`${xy.x}, ${xy.y}`);
 
-    function enemyWidth(dataEnemy) {
-        if (!dataEnemy) {
-            return 0;
+        if (this.checkRandomXY(xy)) {
+
+            // OKならそのまま返す
+            //console.log('OK');
+            return xy;
+
+        } else {
+
+            // NGでも敵画像サイズが大きい場合はそのまま返す
+            if (boxWidth / 2 - enemyWidth(dEnemy) < 0) {
+                return xy;
+            } 
+
+            // それでもNGなら再抽選して返す
+            //console.log('NG');
+            return this.getCheckedRandomXY(dEnemy);
+
         }
 
-        console.log(`battlerImage: ${dataEnemy.meta.battleImage}`);
-        return ImageManager.loadEnemy(dataEnemy.meta.battlerImage).width;
     }
 
-    function selectEnemyId(arrayData) {
-        if (!arrayData.meta.RandomEnemy) {
-            return null;
-        };
-        var pool = JsonEx.parse(`[${arrayData.meta.RandomEnemy}]`);
-        return Number(pool[Math.randomInt(pool.length)]);
+    Game_Troop.prototype.checkRandomXY = function(xy) {
+
+        let gEnemy;
+        for (let i = 0; i < this._enemies.length; i++) {
+
+            gEnemy = this._enemies[i];
+            const x = Number(gEnemy._screenX);
+            const y = Number(gEnemy._screenY);
+            const id = gEnemy._enemyId;
+
+            const minX = x - enemyWidth($dataEnemies[id]) / 3;
+            const minY = y - enemyHeight($dataEnemies[id]) / 3;
+            const maxX = x + enemyWidth($dataEnemies[id]) / 3;
+            const maxY = y + enemyHeight($dataEnemies[id]) / 3;
+
+            //console.log(`minX: ${minX} <= x: ${xy.x} <= maxX: ${maxX}`);
+            //console.log(`minY: ${minY} <= y: ${xy.y} <= maxY: ${maxY}`);
+
+            if (minX <= xy.x && xy.x <= maxX
+             && minY <= xy.y && xy.y <= maxY) {
+
+                return false;
+
+            }
+
+        }
+
+        return true;
+    }
+
+    function getRandomX(dEnemy) {
+
+        let randX = 0;
+
+        if (boxWidth / 2 - enemyWidth(dEnemy) < 0) {
+            // 画像の横幅が画面幅の半分を超える
+            randX = Math.randomInt((boxWidth - enemyWidth(dEnemy)) / 2) + enemyWidth(dEnemy) / 2;
+        } else {
+            // 戦闘画面左半分で画像がはみ出さない範囲でランダム
+            randX = Math.max(0, Math.randomInt(boxWidth / 2 - enemyWidth(dEnemy))) + enemyWidth(dEnemy);
+        }
+
+
+        return randX;
+
+    }
+
+    function getRandomY(dEnemy) {
+
+        // ステータスウィンドウより上で、
+        // かつ戦闘背景２と重ならない範囲でランダム
+        const bswh = Window_Selectable.prototype.fittingHeight(4);
+        const battlebacks2Height = 200;
+        let randY = Math.randomInt(boxHeight - bswh - battlebacks2Height - enemyHeight(dEnemy) / 2);
+        randY += battlebacks2Height + enemyHeight(dEnemy) / 2;
+
+        //const randY = Math.max(0, Math.randomInt(boxHeight - bswh - enemyHeight(dEnemy))) + enemyHeight(dEnemy);
+
+        return randY;
+    }
+
+    Game_Troop.prototype.rearrangeEnemiesFV = function(dEnemies) {
+
+        // dataEnemyオブジェクトの配列を受け取って、
+        // それぞれの内容から均等になるようにX座標を決めて
+        // this._enemies に追加する。
+
+        // 一旦内容をクリア
+        this._enemies = [];
+
+        // 登場する敵の画像の横幅を把握する
+        let widths = [];
+        let totalWidth = 0;
+        for (let i = 0; i < dEnemies.length; i++) {
+
+            widths.push(enemyWidth(dEnemies[i]));
+            totalWidth += enemyWidth(dEnemies[i]);
+
+        }
+
+        // 左端空白[敵]minGap[敵]minGap...minGap[敵]minGap[敵]右端空白
+        // となるようにX座標を決める
+        const minGap = 24;
+        const sideGap = (boxWidth - totalWidth - minGap * (widths.length - 1)) / 2;
+        const bswh = Window_Selectable.prototype.fittingHeight(4);
+        let gEnemy;
+        let prevX;
+        let x;
+        const y = boxHeight - bswh;
+        for (let i = 0; i < dEnemies.length; i++) {
+
+            if (prevX) {
+
+                // 左から２体め以降
+                x = prevX + widths[i - 1] / 2 + minGap + widths[i] / 2;
+
+            } else {
+
+                // 左端
+                x = sideGap + widths[0] / 2;
+
+            }
+            prevX = x;
+
+            gEnemy = new Game_Enemy(dEnemies[i].id, x, y);
+            if (dEnemies[i].hidden) {
+
+                gEnemy.hide();
+
+            }
+
+            this._enemies.push(gEnemy);
+        }
     };
+
+    function enemyWidth(dEnemy) {
+
+        if (!dEnemy) return 0;
+
+        return Number(ImageManager.loadEnemy(dEnemy.battlerName).width);
+
+    }
+
+    function enemyHeight(dEnemy) {
+
+        if (!dEnemy) return 0;
+
+        return Number(ImageManager.loadEnemy(dEnemy.battlerName).height);
+
+    }
+
 })();
