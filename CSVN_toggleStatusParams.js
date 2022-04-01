@@ -7,6 +7,7 @@
 ----------------------------------------------------------------------------
  Version
  1.0.0 2021/07/13 初版
+ 1.0.1 2021/07/17 PluginCommonBase採用
 ----------------------------------------------------------------------------
  [Twitter]: https://twitter.com/cursed_steven
 =============================================================================*/
@@ -14,6 +15,8 @@
 /*:
  * @target MZ
  * @plugindesc Toggle show/hide of status params.
+ * @base PluginCommonBase
+ * @orderAfter PluginCommonBase
  * @author cursed_steven
  * @url https://note.com/cursed_steven/n/ne5da99d8d97a
  *
@@ -72,6 +75,8 @@
 /*:ja
  * @target MZ
  * @plugindesc ステータス画面の能力値の表示/非表示を切り替えます。
+ * @base PluginCommonBase
+ * @orderAfter PluginCommonBase
  * @author ノロワレ
  * @url https://note.com/cursed_steven/n/ne5da99d8d97a
  *
@@ -131,19 +136,7 @@
 
 (() => {
     'use strict';
-
-    function toBoolean(val, dflt) {
-        if (val == '') return dflt;
-        return val.toLowerCase() == 'true';
-    }
-
-    const params = PluginManager.parameters('CSVN_toggleStatusParams');
-    const atk = toBoolean(params['atk'], true);
-    const def = toBoolean(params['def'], true);
-    const mat = toBoolean(params['mat'], true);
-    const mdf = toBoolean(params['mdf'], true);
-    const agi = toBoolean(params['agi'], true);
-    const luk = toBoolean(params['luk'], true);
+    const params = PluginManagerEx.createParameter(document.currentScript);
 
     const atkParamId = 2;
     const defParamId = 3;
@@ -165,27 +158,27 @@
         lukParamId,
     ];
 
-    if (!atk) {
+    if (!params.atk) {
         indexes.pop();
         paramIds.splice(indexes.length - 5, 1);
     }
-    if (!def) {
+    if (!params.def) {
         indexes.pop();
         paramIds.splice(indexes.length - 4, 1);
     }
-    if (!mat) {
+    if (!params.mat) {
         indexes.pop();
         paramIds.splice(indexes.length - 3, 1)
     }
-    if (!mdf) {
+    if (!params.mdf) {
         indexes.pop();
         paramIds.splice(indexes.length - 2, 1);
     }
-    if (!agi) {
+    if (!params.agi) {
         indexes.pop();
         paramIds.splice(indexes.length - 1, 1);
     }
-    if (!luk) {
+    if (!params.luk) {
         indexes.pop();
         paramIds.splice(indexes.length - 0, 1);
     }
@@ -205,15 +198,15 @@
         this.drawText(value, rect.x + 160, rect.y, 60, "right");
     };
 
-Window_EquipStatus.prototype.drawAllParams = function() {
-    for (let i = 0; i < 6; i++) {
-        if (!indexes.includes(i)) continue;
+    Window_EquipStatus.prototype.drawAllParams = function() {
+        for (let i = 0; i < 6; i++) {
+            if (!indexes.includes(i)) continue;
 
-        const ix = indexes[i];
-        const x = this.itemPadding();
-        const y = this.paramY(ix);
-        const p = paramIds[ix];
-        this.drawItem(x, y, p);
-    }
-};
+            const ix = indexes[i];
+            const x = this.itemPadding();
+            const y = this.paramY(ix);
+            const p = paramIds[ix];
+            this.drawItem(x, y, p);
+        }
+    };
 })();
